@@ -88,7 +88,7 @@ listImages.addEventListener("click", function (e) {
    const linkCurrentImage = e.target.dataset.source;
    const instance = basicLightbox.create(`<img src="${linkCurrentImage}">`);   /*adding element's link, that was selected*/ 
 
-    instance.show()
+    instance.show() 
     modalOpen = true;
 
     if(modalOpen) {
