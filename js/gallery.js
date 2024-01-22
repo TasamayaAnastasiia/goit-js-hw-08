@@ -75,31 +75,34 @@ galleryHtml +=
 </li>`;
 }); 
 
-listImages.insertAdjacentHTML('beforeend', galleryHtml);   /*adding elements in DOM*/
+listImages.insertAdjacentHTML('beforeend', galleryHtml);  
 
 let modalOpen = false;
+let keydownListener;
 
 listImages.addEventListener("click", function (e) {
+    if (e.target.nodeName === 'IMG') {
+        e.preventDefault();
 
-   if (e.target.nodeName === 'IMG') {                      /* Check: action on the element to be selected or no*/
-   
-   e.preventDefault();
+        const linkCurrentImage = e.target.dataset.source;
+        const instance = basicLightbox.create(`<img src="${linkCurrentImage}">`, {
+            onShow: (instance) => {
+                modalOpen = true;
 
-   const linkCurrentImage = e.target.dataset.source;
-   const instance = basicLightbox.create(`<img src="${linkCurrentImage}">`);   /*adding element's link, that was selected*/ 
+                keydownListener = function listenKeydown(e) {
+                    if (e.key === 'Escape') {
+                        instance.close();
+                    }
+                };
 
-    instance.show() 
-    modalOpen = true;
-
-    if(modalOpen) {
-        listImages.addEventListener("keydown", function listenKeydown(e) {
-            if (e.key === 'Escape')                                                         /*if press Escape, modal window closes*/
-            {
-                instance.close();
+                window.addEventListener("keydown", keydownListener);
+            },
+            onClose: () => {
                 modalOpen = false;
-                listImages.removeEventListener("keydown", listenKeydown);
-            }
+                window.removeEventListener("keydown", keydownListener);
+            },
         });
+
+        instance.show();
     }
-}
 });
